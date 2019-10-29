@@ -63,7 +63,7 @@ def saveRandomDemand(random_demand):
     :return: 保存成单位为GPM的随机需水量矩阵
     """
     random_demand=random_demand/(0.003785411784/60.0)
-    np.savetxt('random_demand.txt',random_demand,fmt='%.15f')
+    np.savetxt('resoures/random_demand.txt',random_demand,fmt='%.15f')
 
 def getRandomPressureFromFile(fileName,wn):
     # node_name_list = wn.node_name_list[0:1317]
@@ -99,6 +99,11 @@ def drawRandomData(random_Data,flag=False):
     #print(random_demand)
     if(flag==True):
         plt.show()
+def getPressureByDemand():
+    """
+    通过调用命令行由需求不确定获得压力数据
+    """
+    pass
 
 if __name__=="__main__":
     file = "resoures/Net3.inp"
