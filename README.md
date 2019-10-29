@@ -1,1 +1,3 @@
 # getUncertainPressure
+这里的 getUncertainPressure远程库文件夹对应于本地库的E:\pythonStudy的内容
+
