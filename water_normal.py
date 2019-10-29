@@ -35,7 +35,7 @@ def getRandomDemand(wn,length=1317,Size=1000):
     :param wn:
     :param length: 每个行向量的长度，代表生成多少节点的随机需求，从矩阵看是多少列
     :param Size: 代表每个节点生成多少个随机需求，从矩阵看是多少行
-    :return: 返回矩阵
+    :return: 返回矩阵(单位未转化为GPM)
     """
     sim = wntr.sim.EpanetSimulator(wn)#库->包->模块->类/函数
     results =sim.run_sim()
@@ -49,8 +49,8 @@ def getRandomDemand(wn,length=1317,Size=1000):
     conv=np.diag(var)       #协方差矩阵
     np.random.seed(1)       #保证每次试验生成的随机样本是一样的
     random_demand= np.random.multivariate_normal(mean=mean, cov=conv, size=Size)     #随机抽取多元正太分布变量的样本，这是实际需水量。random_demand.shape=(1000, 1317)
-    node_name_list = wn.node_name_list[0:1317]
-    length=len(random_demand[0])
+    # node_name_list = wn.node_name_list[0:1317]
+    # length=len(random_demand[0])
     for i in range(len(random_demand)):#把需水量为0的节点的随机需水量该为0
         for j in range(length):
             if(mean[j]==0):
@@ -58,12 +58,15 @@ def getRandomDemand(wn,length=1317,Size=1000):
     return random_demand
 
 def saveRandomDemand(random_demand):
+    """
+    :param random_demand: 随机需水量
+    :return: 保存成单位为GPM的随机需水量矩阵
+    """
     random_demand=random_demand/(0.003785411784/60.0)
     np.savetxt('random_demand.txt',random_demand,fmt='%.15f')
 
-
 def getRandomPressureFromFile(fileName,wn):
-    node_name_list = wn.node_name_list[0:1317]
+    # node_name_list = wn.node_name_list[0:1317]
     pressure=[]
     with open(fileName, 'r') as file:
         for line in file:
@@ -98,15 +101,15 @@ def drawRandomData(random_Data,flag=False):
         plt.show()
 
 if __name__=="__main__":
-    file = "resoures/ky8.inp"
-    pressureFilePath="resoures/randomPressure.txt"
+    file = "resoures/Net3.inp"
     wn=getWaterNetworkModel(file)
-    random_demand=getRandomDemand(wn)
+    random_demand=getRandomDemand(wn,length=92)
     saveRandomDemand(random_demand)
     # #drawRandomDemand(random_demand,flag=True)
+    pressureFilePath = "resoures/randomPressure.txt"
     # pressure=getRandomPressureFromFile(pressureFilePath,wn)
     # drawRandomData(pressure, flag=True)
-    print(type(random_demand))
+    print(random_demand.shape)
 
 
 
