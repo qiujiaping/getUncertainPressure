@@ -3,7 +3,7 @@ import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import wntr
 import pandas as pd
-
+import os
 
 """
 Pattern(name[, multipliers, time_options, wrap])
@@ -70,8 +70,9 @@ def getRandomPressureFromFile(fileName,wn):
     pressure=[]
     with open(fileName, 'r') as file:
         for line in file:
-            data=line.split()
-            data = list(map(float, data))
+            data=line.split()         #字符型的
+            data = list(map(float, data))   #转为浮点型的
+
             pressure.append(data)
     pressure=np.array(pressure)
     return pressure
@@ -87,7 +88,8 @@ def drawRandomData(random_Data,flag=False):
     # print(random_demand.std(axis=0))     #打印样本标准差
     for i in range(4):
         plt.subplot(221 + i)
-        n, bins, patches = plt.hist(random_Data[:, i]/(0.003785411784/60.0), 1000, facecolor='green', alpha=0.5)
+        n, bins, patches = plt.hist(random_Data[:, i], 1000, facecolor='green', alpha=0.5)
+        # n, bins, patches = plt.hist(random_Data[:, i]/(0.003785411784/60.0), 1000, facecolor='green', alpha=0.5)
         # plt.xlabel('Expectation(GPM)')
         plt.xlabel('Expectation')
         plt.ylabel('frequency')
@@ -101,20 +103,29 @@ def drawRandomData(random_Data,flag=False):
         plt.show()
 def getPressureByDemand():
     """
-    通过调用命令行由需求不确定获得压力数据
+
+    :param row: row和Size意义一样
+    :return: 通过调用命令行由需求不确定获得压力数据
     """
-    pass
+    exePath="D:\\keyanshuju\\2019-10-29\\getPressureByDemand\\EpanetSimulation\\Debug\\EpanetSimulation.exe"
+    random_demandPath="E:\\pythonStudy\\resoures\\random_demand.txt"
+    t = exePath + " " + random_demandPath
+    os.system(t)
 
 if __name__=="__main__":
     file = "resoures/Net3.inp"
     wn=getWaterNetworkModel(file)
-    random_demand=getRandomDemand(wn,length=92)
-    saveRandomDemand(random_demand)
-    # #drawRandomDemand(random_demand,flag=True)
+    # random_demand=getRandomDemand(wn,length=92,Size=5000)
+    # saveRandomDemand(random_demand)
+    # getPressureByDemand()
+    # # #drawRandomDemand(random_demand,flag=True)
     pressureFilePath = "resoures/randomPressure.txt"
-    # pressure=getRandomPressureFromFile(pressureFilePath,wn)
+    pressure=getRandomPressureFromFile(pressureFilePath,wn)
+
+    print(pressure[:,0].std())
+    # print(pressure[2,:].mean)
     # drawRandomData(pressure, flag=True)
-    print(random_demand.shape)
+    # 下一步更改模拟次数大于1000
 
 
 
